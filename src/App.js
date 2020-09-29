@@ -9,20 +9,31 @@ class App extends Component {
     this.state = {
       tasks: [{
         task:'Dummy Task',
-        id: uniqid()
-      }
-      ],
+        id: uniqid(),
+        disabledInput: true
+      }],
       input: '',
     }
 
     this.addTask = this.addTask.bind(this);
     this.removeTask = this.removeTask.bind(this);
+    this.editTask = this.editTask.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+  }
+
+  handleInputChange(text, task) {
+    this.setState([...this.state.tasks, task.task = text ])
+  }
+
+  editTask(task) {
+    this.setState([...this.state.tasks, task.disabledInput= !task.disabledInput ]);
   }
 
   addTask () {
     const newTask = {
       task: this.state.input,
-      id: uniqid()
+      id: uniqid(),
+      disabledInput: true
     }
     let joined = this.state.tasks.concat(newTask);
     this.setState({ tasks: joined, input: ''})
@@ -37,7 +48,12 @@ class App extends Component {
   render() {
     return(
       <div>
-        <List tasks={this.state.tasks} removeTask={this.removeTask} ></List>
+        <List 
+          tasks={this.state.tasks} 
+          removeTask={this.removeTask} 
+          editTask={this.editTask} 
+          handleInputChange={this.handleInputChange}>
+        </List>
         <form 
           onSubmit={(e)=> {e.preventDefault()}}
           className= 'bg-white shadow-md flex justify-center mt-5 pb-5 pt-5' 
@@ -46,7 +62,7 @@ class App extends Component {
             value= {this.state.input}
             onChange={(e) => this.setState({ input: e.target.value })}
             placeholder="Task to do"
-            className='bg-teal-100 border-2 border-teal-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-teal-500'
+            className='bg-teal-100 border-2 border-teal-200 rounded py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-teal-500 sm:text-center'
           />
           <button 
             onClick={ this.addTask }
